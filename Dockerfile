@@ -1,13 +1,10 @@
-FROM ubuntu:latest
+FROM docker:latest
 
-RUN apt-get update \
-    && apt-get install -y curl unzip docker jq python3 python3-pip systemd \
-    && curl -sL https://deb.nodesource.com/setup_13.x | bash - \
-    && curl -fsSL https://get.docker.com -o get-docker.sh \
-    && sh get-docker.sh \
-    && apt-get install -y nodejs \
-    && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" \
-    && unzip awscliv2.zip
-RUN ["sh", "./aws/install"]
+RUN apk add --no-cache curl jq python nodejs npm py-pip \
+    && pip install awscli \
+    && npm install -g @angular/cli \
+    && curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl \
+    && chmod +x ./kubectl \
+    && mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
 
-CMD ["/bin/bash"]
+CMD ["/bin/sh"]
